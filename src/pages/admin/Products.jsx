@@ -17,7 +17,7 @@ export default function AdminProducts() {
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      const params = { page, limit: 15 };
+      const params = { page, limit: 20 };
       if (search) params.keyword = search;
       const { data } = await productAPI.getAll(params);
       setProducts(data.products);

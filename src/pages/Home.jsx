@@ -73,7 +73,7 @@ const SectionHeader = ({ title, subtitle, link, linkLabel = 'View all →' }) =>
 
 /* ─── Product Grid ───────────────────────────────────────────────── */
 const ProductGrid = ({ products, loading, count = 8 }) => (
-  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
+  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-5">
     {loading
       ? Array(count).fill(null).map((_, i) => <ProductCardSkeleton key={i} />)
       : products.length > 0
@@ -127,7 +127,7 @@ export default function Home() {
       .catch(() => setNewArrivals([]))
       .finally(() => setLoadingNew(false));
 
-    productAPI.getAll({ page: 1, limit: 16, sort: 'newest' })
+    productAPI.getAll({ page: 1, limit: 30, sort: 'newest' })
       .then(({ data }) => setAllProducts(data.products || []))
       .catch(() => setAllProducts([]))
       .finally(() => setLoadingAll(false));
@@ -150,18 +150,20 @@ export default function Home() {
 
       {/* ── Categories ── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
-        <SectionHeader title="Shop by Category" subtitle="Browse our wide range of product categories" />
+        <SectionHeader title="Shop by Category" subtitle="Browse our wide range of product categories" link="/products" linkLabel="All products →" />
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
           {loadingCats
-            ? Array(8).fill(null).map((_, i) => <div key={i} className="skeleton h-24 rounded-2xl" />)
+            ? Array(8).fill(null).map((_, i) => <div key={i} className="skeleton h-28 rounded-2xl" />)
             : (categories.length > 0 ? categories.slice(0, 8) : STATIC_CATS).map((cat) => {
                 const to   = cat._id ? `/products?category=${cat._id}` : `/products?keyword=${cat.kw || cat.name}`;
                 const name = cat.name || cat.label;
                 return (
                   <Link key={cat._id || cat.kw} to={to}
-                    className="flex flex-col items-center justify-center p-4 bg-gray-50 hover:bg-orange-50 border border-gray-100 hover:border-[#e85d04]/40 rounded-2xl transition-all group cursor-pointer">
-                    <span className="text-3xl mb-2 group-hover:scale-110 transition-transform">{cat.icon}</span>
-                    <span className="text-xs font-semibold text-center text-gray-700 group-hover:text-[#e85d04] transition-colors leading-tight">{name}</span>
+                    className="flex flex-col items-center justify-center p-4 bg-white hover:bg-orange-50 border border-gray-100 hover:border-[#e85d04]/50 rounded-2xl transition-all group cursor-pointer shadow-sm hover:shadow-md">
+                    <div className="w-12 h-12 bg-orange-50 group-hover:bg-[#e85d04] rounded-xl flex items-center justify-center text-2xl mb-2 transition-all group-hover:scale-110">
+                      {cat.icon}
+                    </div>
+                    <span className="text-xs font-bold text-center text-gray-700 group-hover:text-[#e85d04] transition-colors leading-tight">{name}</span>
                   </Link>
                 );
               })
@@ -172,7 +174,7 @@ export default function Home() {
       {/* ── Featured Products ── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-14">
         <SectionHeader title="Featured Products ⭐" subtitle="Hand-picked top quality items" link="/products?featured=true" />
-        <ProductGrid products={featured} loading={loadingFeat} count={8} />
+        <ProductGrid products={featured} loading={loadingFeat} count={12} />
       </section>
 
       {/* ── Promo Banners ── */}
@@ -207,21 +209,28 @@ export default function Home() {
       <section className="bg-gray-50 py-14">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <SectionHeader title="Best Sellers 🔥" subtitle="Top picks loved by our customers this week" link="/products?sort=popular" />
-          <ProductGrid products={bestSellers} loading={loadingBest} count={8} />
+          <ProductGrid products={bestSellers} loading={loadingBest} count={20} />
         </div>
       </section>
 
       {/* ── New Arrivals ── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-14">
         <SectionHeader title="New Arrivals ✨" subtitle="Just landed — the freshest additions to our store" link="/products?newArrival=true" />
-        <ProductGrid products={newArrivals} loading={loadingNew} count={8} />
+        <ProductGrid products={newArrivals} loading={loadingNew} count={20} />
       </section>
 
-      {/* ── All Products (safety net) ── */}
+      {/* ── All Products (deduplicated from sections above) ── */}
       <section className="bg-gray-50 py-14">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <SectionHeader title="Recently Added 🛍️" subtitle="Explore everything new in our store" link="/products" linkLabel="Browse all →" />
-          <ProductGrid products={allProducts} loading={loadingAll} count={16} />
+          <SectionHeader title="Explore All Products 🛍️" subtitle="Every product in our store — something for everyone" link="/products" linkLabel="Browse all →" />
+          <ProductGrid
+            products={allProducts.filter(p =>
+              !featured.some(f => f._id === p._id) &&
+              !bestSellers.some(b => b._id === p._id)
+            )}
+            loading={loadingAll}
+            count={30}
+          />
         </div>
       </section>
 

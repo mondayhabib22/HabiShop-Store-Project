@@ -406,7 +406,7 @@ export default function Header() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="flex items-center gap-3 h-16">
+        <div className="flex items-center justify-between gap-4 h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 shrink-0">
             <div className="w-9 h-9 bg-[#e85d04] rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-sm">H</div>
@@ -416,12 +416,12 @@ export default function Header() {
           </Link>
 
           {/* Desktop Search bar with live dropdown */}
-          <div className="flex-1 max-w-xl hidden md:flex">
+          <div className="flex-1 hidden md:flex mx-4">
             <SearchBar />
           </div>
 
           {/* Right actions */}
-          <div className="flex items-center gap-1 ml-auto md:ml-0">
+          <div className="flex items-center gap-1 shrink-0">
             {/* Mobile search toggle */}
             <button
               onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
@@ -515,18 +515,27 @@ export default function Header() {
         )}
 
         {/* Desktop nav links */}
-        <nav className="hidden md:flex items-center gap-1 pb-2">
-          {navLinks.map(({ to, label }) => (
-            <Link key={to} to={to}
-              className={`px-4 py-1.5 text-sm font-medium rounded-lg transition-colors ${
-                (to === '/' ? location.pathname === '/' : location.pathname + location.search === to || location.search === to.replace(/^\/[^?]*/, ''))
-                  ? 'text-[#e85d04] bg-orange-50'
-                  : 'text-gray-600 hover:text-[#e85d04] hover:bg-orange-50'
-              }`}
-            >
-              {label}
-            </Link>
-          ))}
+        <nav className="hidden md:flex items-center justify-between pb-2">
+          <div className="flex items-center gap-1">
+            {navLinks.map(({ to, label }) => (
+              <Link key={to} to={to}
+                className={`px-4 py-1.5 text-sm font-medium rounded-lg transition-colors ${
+                  (to === '/' ? location.pathname === '/' : location.pathname + location.search === to || location.search === to.replace(/^\/[^?]*/, ''))
+                    ? 'text-[#e85d04] bg-orange-50'
+                    : 'text-gray-600 hover:text-[#e85d04] hover:bg-orange-50'
+                }`}
+              >
+                {label}
+              </Link>
+            ))}
+          </div>
+          <div className="flex items-center gap-3 text-xs text-gray-500">
+            <span className="flex items-center gap-1"><span>🚚</span> Free shipping ₦50k+</span>
+            <span className="text-gray-200">|</span>
+            <span className="flex items-center gap-1"><span>📞</span> Support 24/7</span>
+            <span className="text-gray-200">|</span>
+            <Link to="/products?featured=true" className="text-[#e85d04] font-semibold hover:underline">Deals</Link>
+          </div>
         </nav>
       </div>
 

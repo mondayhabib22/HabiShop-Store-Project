@@ -56,7 +56,7 @@ export default function Products() {
     setLoading(true);
     setError(null);
     try {
-      const params = { page, limit: 12, sort };
+      const params = { page, limit: 24, sort };
       if (keyword)    params.keyword    = keyword;
       if (category)   params.category   = category;
       if (minPrice)   params.minPrice   = minPrice;
@@ -220,6 +220,33 @@ export default function Products() {
         </div>
       </div>
 
+      {/* Category quick-filter horizontal scroll bar */}
+      {categories.length > 0 && (
+        <div className="flex gap-2 overflow-x-auto pb-2 mb-5 scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+          <button
+            onClick={() => setParam('category', '')}
+            className={`shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold border transition-all whitespace-nowrap ${
+              !category ? 'bg-[#1a1a2e] text-white border-[#1a1a2e]' : 'bg-white text-gray-600 border-gray-200 hover:border-[#e85d04] hover:text-[#e85d04]'
+            }`}
+          >
+            🛍️ All
+          </button>
+          {categories.map((cat) => (
+            <button
+              key={cat._id}
+              onClick={() => setParam('category', cat._id)}
+              className={`shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold border transition-all whitespace-nowrap ${
+                category === cat._id
+                  ? 'bg-[#e85d04] text-white border-[#e85d04] shadow-md shadow-orange-200'
+                  : 'bg-white text-gray-600 border-gray-200 hover:border-[#e85d04] hover:text-[#e85d04]'
+              }`}
+            >
+              <span>{cat.icon}</span> {cat.name}
+            </button>
+          ))}
+        </div>
+      )}
+
       {/* Active filter chips */}
       {hasFilters && (
         <div className="flex flex-wrap gap-2 mb-5">
@@ -270,7 +297,7 @@ export default function Products() {
               </button>
             </div>
           ) : loading ? (
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-5">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
               {Array(12).fill(null).map((_, i) => <ProductCardSkeleton key={i} />)}
             </div>
           ) : products.length === 0 ? (
@@ -290,7 +317,7 @@ export default function Products() {
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-5">
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
                 {products.map((p) => <ProductCard key={p._id} product={p} />)}
               </div>
 
